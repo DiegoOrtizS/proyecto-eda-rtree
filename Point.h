@@ -9,12 +9,18 @@ using distance_t = double;
 template <typename DataType, std::size_t DIM>
 class Point {
  private:
+  char key;
   std::array<DataType, DIM> _values;
 
  public:
   Point() { std::fill_n(std::begin(_values), DIM, DataType(0)); }
 
   Point(const std::array<DataType, DIM>& init_array) : _values(init_array) {}
+
+  Point(char key, const std::array<DataType, DIM>& init_array) : _values(init_array) 
+  {
+    this->key = key;
+  }
 
   bool operator==(const Point<DataType, DIM>& p) const;
 
@@ -27,6 +33,8 @@ class Point {
 
   DataType get(std::size_t pos) const { return _values.at(pos); }
   void set(std::size_t pos, DataType value) { _values[pos] = value; }
+
+  char getKey() { return key; }
 
   std::size_t size() { return DIM; }
 };
@@ -60,7 +68,7 @@ inline bool Point<DataType, DIM>::operator<=(
 
 template <typename DataType, std::size_t DIM>
 std::ostream& operator<<(std::ostream& os, Point<DataType, DIM>& obj) {
-  return os << "{ " << obj.get(0) << ", " << obj.get(1) << " }";
+  return os << obj.getKey(); // <<  ": { " << obj.get(0) << ", " << obj.get(1) << " }";
 }
 
 template <typename DataType, std::size_t DIM>

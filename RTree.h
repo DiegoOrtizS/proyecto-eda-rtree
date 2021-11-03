@@ -38,6 +38,27 @@ class RTree
             return APrima - A;
         }
 
+        distance_t checkArea(Node *node, point_t it)
+        {
+            distance_t area = -1;
+            if (node->data.size() == 1)
+            {
+                area = node->data[0].getArea(it);
+            }
+            else
+            {
+                if (node->contains(it))
+                {
+                    node->addData(it);
+                }
+                else
+                {
+                    area = areaDiff(node, it);
+                }
+            }
+            return area;
+        }
+
         void printRec(Node *current)
         {
             if (current->isLeaf())
@@ -79,6 +100,7 @@ class RTree
                     return search(it.second, elem);
                 }
             }
+            return nullptr;
         }
 
         void insert(point_t elem)
@@ -91,6 +113,19 @@ class RTree
                 return;
             }
             Node *current = search(root, elem);
+            if (current == nullptr)
+            {
+                distance_t minAreaDiff = DBL_MAX;
+                for (auto it : root->children)
+                {
+                    distance_t currentAreaDiff = areaDiff(it.second, elem);
+                    if (currentAreaDiff < minAreaDiff) 
+                    {
+                        current = it.second;
+                        minAreaDiff = currentAreaDiff;
+                    }
+                }
+            }
 
             if (current->hasSpace(M))
             {
@@ -99,7 +134,7 @@ class RTree
             }
             else
             {
-                // cout << elem << endl;
+                cout << "split node" << endl;
                 pair<point_t, point_t> pairPoints = current->twoFurtherAway(elem);
                 // cout << pairPoints.first << " " << pairPoints.second << endl;
                 Node* firstNode = new Node();
@@ -114,58 +149,31 @@ class RTree
                         continue;
                     }
 
-                    distance_t firstArea;
-                    distance_t secondArea;
-
-                    if (firstNode->data.size() == 1)
-                    {
-                        firstArea = firstNode->data[0].getArea(it);
-                    }
-                    else
-                    {
-                        if (firstNode->contains(it))
-                        {
-                            firstNode->addData(it);
-                            continue;
-                        }
-                        else
-                        {
-                            firstArea = areaDiff(firstNode, it);
-                            // cout << firstArea << endl;
-                        }
-                    }
-
-                    if (secondNode->data.size() == 1)
-                    {
-                        secondArea = secondNode->data[0].getArea(it);
-                        // cout << secondArea << endl;
-                    }
-                    else
-                    {
-                        if (secondNode->contains(it))
-                        {
-                            secondNode->addData(it);
-                            continue;
-                        }
-                        else
-                        {
-                            secondArea = areaDiff(secondNode, it);
-                        }
-                    }
+                    distance_t firstArea = checkArea(firstNode, it);
+                    if (firstArea == -1) continue;
+                    distance_t secondArea = checkArea(secondNode, it);
+                    if (secondArea == -1) continue;
 
                     if (firstArea < secondArea)
-                    {
                         firstNode->addData(it);
-                    }
                     else
-                    {
                         secondNode->addData(it);
+                }
+                if (current == root)
+                {
+                    current->data.clear();
+                    current->addNode("e"+to_string(cont++), firstNode);
+                    current->addNode("e"+to_string(cont++), secondNode);
+                    root = current;
+                }
+                else
+                {
+                    if (root->hasSpace(M))
+                    {
+                        root->addNode("e"+to_string(cont-1), firstNode);
+                        root->addNode("e"+to_string(cont++), secondNode);
                     }
                 }
-                current->data.clear();
-                current->addNode("e"+to_string(cont++), firstNode);
-                current->addNode("e"+to_string(cont++), secondNode);
-                root = current;
             }
         }
 
