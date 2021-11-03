@@ -8,7 +8,8 @@ using namespace std;
 struct Node
 {
     vector<point_t> data;
-    vector<Node*> children;
+    // vector<Node*> children;
+    map<string, Node*> children;
 
     Node() {};
 
@@ -52,9 +53,9 @@ struct Node
     {
         data.push_back(elem);
     }
-    void addNode(Node* nodo)
+    void addNode(string key, Node* node)
     {
-        children.push_back(nodo);
+        children[key] = node;
     }
 
     bool contains(point_t elem)
@@ -79,18 +80,30 @@ struct Node
         point_t secondPoint;
         distance_t maxDistance = -1;
 
-        for (int i = 0; i < data.size(); i++)
+        vector<point_t> dataAux = data;
+        dataAux.push_back(elem);
+
+        for (int i = 0; i < dataAux.size(); i++)
         {
-            for (int j = i+1; j < data.size(); j++)
+            for (int j = i+1; j < dataAux.size(); j++)
             {
-                if (data[i].distance(data[j]) > maxDistance)
+                if (dataAux[i].distance(dataAux[j]) > maxDistance)
                 {
-                    firstPoint = data[i];
-                    secondPoint = data[j];
-                    maxDistance = data[i].distance(data[j]);
+                    firstPoint = dataAux[i];
+                    secondPoint = dataAux[j];
+                    maxDistance = dataAux[i].distance(dataAux[j]);
                 }
             }
         }
         return make_pair(firstPoint, secondPoint);
+    }
+
+    void printData()
+    {
+        for (auto it : data)
+        {
+            cout << it << " ";
+        }
+        cout << endl;
     }
 };

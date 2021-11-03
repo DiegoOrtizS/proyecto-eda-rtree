@@ -1,4 +1,5 @@
 #include "Node.h"
+#include <assert.h>
 
 class RTree
 {
@@ -6,13 +7,15 @@ class RTree
         Node *root;
         size_t M;
         size_t m;
+        size_t cont;
 
         distance_t areaDiff(Node *node, point_t it)
         {
             auto minPoint = node->getMinPointMBR();
             auto maxPoint = node->getMaxPointMBR();
             auto A = minPoint.getArea(maxPoint);
-
+            // cout << minPoint << " " << maxPoint << endl;
+            // cout << "ÁREA A: " << A << endl;
             if (it.get(0) > maxPoint.get(0))
             {
                 maxPoint.set(0, it.get(0));
@@ -21,51 +24,84 @@ class RTree
             {
                 maxPoint.set(1, it.get(1));
             }
-            if (it.get(0) > minPoint.get(0))
+            if (it.get(0) < minPoint.get(0))
             {
                 minPoint.set(0, it.get(0));
             }
-            if (it.get(1) > minPoint.get(1))
+            if (it.get(1) < minPoint.get(1))
             {
                 minPoint.set(1, it.get(1));
             }
-
+            // cout << minPoint << " " << maxPoint << endl;
             auto APrima = minPoint.getArea(maxPoint);
+            // cout << "ÁREA A': " << APrima << endl;
             return APrima - A;
         }
 
+        void printRec(Node *current)
+        {
+            if (current->isLeaf())
+            {
+                for (auto it : current->data)
+                {
+                    cout << it << " ";
+                }
+            }
+            for (auto it : current->children)
+            {
+                cout << it.first << " ";
+                printRec(it.second);
+                cout << endl;
+            }
+        }
+
     public:
-        RTree(size_t M, size_t m) 
+        RTree(size_t m, size_t M) 
         { 
+            assert(m <= ceil(M/2.0));
             root = nullptr; 
-            this->M = M;
             this->m = m;
+            this->M = M;
+            cont = 1;
         };
         ~RTree() {};
 
         Node* search(Node* current, point_t elem)
         {
-            if (current->isLeaf()) return current;
+            if (current->isLeaf()) 
+            {
+                return current;
+            }
             for (auto it : current->children)
             {
-                if (it->contains(elem))
+                if (it.second->contains(elem))
                 {
-                    return search(it, elem);
+                    return search(it.second, elem);
                 }
             }
         }
 
         void insert(point_t elem)
         {
-            Node* current = search(root, elem);
+            if (root == nullptr)
+            {
+                root = new Node();
+                root->addData(elem);
+                cout << "1er insert\n";
+                return;
+            }
+            Node *current = search(root, elem);
 
             if (current->hasSpace(M))
             {
                 current->addData(elem);
+                cout << "tiene espacio\n";
             }
             else
             {
+                // cout << elem << endl;
                 pair<point_t, point_t> pairPoints = current->twoFurtherAway(elem);
+                // cout << pairPoints.first << " " << pairPoints.second << endl;
                 Node* firstNode = new Node();
                 firstNode->addData(pairPoints.first);
                 Node* secondNode = new Node();
@@ -95,12 +131,14 @@ class RTree
                         else
                         {
                             firstArea = areaDiff(firstNode, it);
+                            // cout << firstArea << endl;
                         }
                     }
 
                     if (secondNode->data.size() == 1)
                     {
                         secondArea = secondNode->data[0].getArea(it);
+                        // cout << secondArea << endl;
                     }
                     else
                     {
@@ -124,9 +162,15 @@ class RTree
                         secondNode->addData(it);
                     }
                 }
-                auto parentNode = new Node();
-                parentNode->addNode(firstNode);
-                parentNode->addNode(secondNode);
+                current->data.clear();
+                current->addNode("e"+to_string(cont++), firstNode);
+                current->addNode("e"+to_string(cont++), secondNode);
+                root = current;
             }
+        }
+
+        void print()
+        {
+            printRec(root);
         }
 };

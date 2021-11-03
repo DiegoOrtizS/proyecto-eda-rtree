@@ -14,14 +14,6 @@ class Point {
  public:
   Point() { std::fill_n(std::begin(_values), DIM, DataType(0)); }
 
-  // Point(std::vector<DataType> vec) 
-  // {
-  //   for (int i = 0; i < DIM; i++)
-  //   {
-  //     set(i, vec[i]);
-  //   }
-  // }
-
   Point(const std::array<DataType, DIM>& init_array) : _values(init_array) {}
 
   bool operator==(const Point<DataType, DIM>& p) const;
@@ -68,7 +60,7 @@ inline bool Point<DataType, DIM>::operator<=(
 
 template <typename DataType, std::size_t DIM>
 std::ostream& operator<<(std::ostream& os, Point<DataType, DIM>& obj) {
-  return os << obj.get(0) << " " << obj.get(1) << "\n";
+  return os << "{ " << obj.get(0) << ", " << obj.get(1) << " }";
 }
 
 template <typename DataType, std::size_t DIM>
