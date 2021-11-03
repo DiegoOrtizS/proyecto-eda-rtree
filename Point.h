@@ -5,7 +5,6 @@
 #include <ostream>
 
 using distance_t = double;
-using point_t = Point<distance_t, 2>;
 
 template <typename DataType, std::size_t DIM>
 class Point {
@@ -14,6 +13,14 @@ class Point {
 
  public:
   Point() { std::fill_n(std::begin(_values), DIM, DataType(0)); }
+
+  // Point(std::vector<DataType> vec) 
+  // {
+  //   for (int i = 0; i < DIM; i++)
+  //   {
+  //     set(i, vec[i]);
+  //   }
+  // }
 
   Point(const std::array<DataType, DIM>& init_array) : _values(init_array) {}
 
@@ -24,9 +31,10 @@ class Point {
   bool operator<=(const Point<DataType, DIM>& p) const;
 
   distance_t distance(const Point<DataType, DIM>& p) const;
-  distance_t Point<DataType, DIM>::getArea(const Point<DataType, DIM>& p) const;
+  distance_t getArea(const Point<DataType, DIM>& p) const;
 
   DataType get(std::size_t pos) const { return _values.at(pos); }
+  void set(std::size_t pos, DataType value) { _values[pos] = value; }
 
   std::size_t size() { return DIM; }
 };
@@ -80,3 +88,5 @@ inline distance_t Point<DataType, DIM>::distance(
   }
   return sqrt(acum);
 }
+
+using point_t = Point<distance_t, 2>;

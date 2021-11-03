@@ -1,5 +1,6 @@
 #include <vector>
 #include <map>
+#include <cfloat>
 #include "Point.h"
 
 using namespace std;
@@ -17,16 +18,16 @@ struct Node
         distance_t minY = DBL_MAX;
         for (auto it : data)
         {
-            if (it < minX)
+            if (it.get(0) < minX)
             {
                 minX = it.get(0);
             }
-            if (it < minY)
+            if (it.get(1) < minY)
             {
                 minY = it.get(1);
             }
         }
-        return point_t(minX, minY);
+        return point_t({minX, minY});
     }
 
     point_t getMaxPointMBR()
@@ -35,16 +36,16 @@ struct Node
         distance_t maxY = DBL_MIN;
         for (auto it : data)
         {
-            if (it > maxX)
+            if (it.get(0) > maxX)
             {
                 maxX = it.get(0);
             }
-            if (it > maxY)
+            if (it.get(1) > maxY)
             {
                 maxY = it.get(1);
             }
         }
-        return point_t(maxX, maxY);
+        return point_t({maxX, maxY});
     }    
 
     void addData(point_t elem)
