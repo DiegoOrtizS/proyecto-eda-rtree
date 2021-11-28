@@ -141,6 +141,8 @@ class RTree
                 firstNode->addData(pairPoints.first);
                 Node* secondNode = new Node();
                 secondNode->addData(pairPoints.second);
+
+
               
                 for (auto it : current->data)
                 {
@@ -163,6 +165,8 @@ class RTree
                 {
                     current->data.clear();
                     current->addNode("e"+to_string(cont++), firstNode);
+                    current->minPoint = ;
+                    current->maxPoint = ;
                     current->addNode("e"+to_string(cont++), secondNode);
                     root = current;
                 }
