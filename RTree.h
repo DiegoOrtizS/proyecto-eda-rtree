@@ -11,8 +11,9 @@ class RTree
 
         distance_t areaDiff(Node *node, point_t it)
         {
-            auto minPoint = node->getMinPointMBR();
-            auto maxPoint = node->getMaxPointMBR();
+            auto MBR = node->getMBR();
+            auto minPoint = MBR.getMinPoint();
+            auto maxPoint = MBR.getMaxPoint();
             auto A = minPoint.getArea(maxPoint);
             // cout << minPoint << " " << maxPoint << endl;
             // cout << "ÁREA A: " << A << endl;
@@ -113,6 +114,7 @@ class RTree
                 return;
             }
             Node *current = search(root, elem);
+            // puede que haya bug
             if (current == nullptr)
             {
                 distance_t minAreaDiff = DBL_MAX;
@@ -165,8 +167,6 @@ class RTree
                 {
                     current->data.clear();
                     current->addNode("e"+to_string(cont++), firstNode);
-                    current->minPoint = ;
-                    current->maxPoint = ;
                     current->addNode("e"+to_string(cont++), secondNode);
                     root = current;
                 }

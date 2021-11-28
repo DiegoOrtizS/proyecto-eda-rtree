@@ -13,6 +13,8 @@ int main()
     rtree->insert(point_t(letra++, {4, 2.5}));
     rtree->insert(point_t(letra++, {4, 4}));
     rtree->print();
+    // no se cumple que haya como mínimo m elementos
+    // split recursivo falta
     cout << endl;
     return 0;
 }
