@@ -1,27 +1,14 @@
 #include <vector>
 #include <map>
 #include <cfloat>
-#include "Point.h"
-
-using namespace std;
-
-struct MBR
-{
-    distance_t minX;
-    distance_t minY;
-    distance_t maxX;
-    distance_t maxY;
-
-    point_t getMinPoint() { return point_t({minX, minY}); };
-    point_t getMaxPoint() { return point_t({maxX, maxY}); };
-};
+#include <algorithm>
+#include "MBR.h"
 
 struct Node
 {
     vector<point_t> data;
     map<string, Node*> children;
-    vector<MBR> vecMBR;
-
+    map<string, MBR> MBRs;
 
     Node() {};
 
@@ -40,79 +27,31 @@ struct Node
         }
         else
         {
-            for (auto it : vecMBR)
+            for (auto it : MBRs)
             {
-                if (it.minX < minX) minX = it.minX;
-                if (it.minY < minY) minY = it.minY;
-                if (it.maxX > maxX) maxX = it.maxX;
-                if (it.maxY > maxY) maxY = it.maxY;
+                auto mbr = it.second;
+                if (mbr.minX < minX) minX = mbr.minX;
+                if (mbr.minY < minY) minY = mbr.minY;
+                if (mbr.maxX > maxX) maxX = mbr.maxX;
+                if (mbr.maxY > maxY) maxY = mbr.maxY;
             }
         }
 
         return MBR{minX, minY, maxX, maxY};
     }
 
-    // point_t getMinPointMBR()
-    // {
-    //     distance_t minX = DBL_MAX;
-    //     distance_t minY = DBL_MAX;
-    //     if (isLeaf())
-    //     {
-    //         for (auto it : data)
-    //         {
-    //             if (it.get(0) < minX)
-    //             {
-    //                 minX = it.get(0);
-    //             }
-    //             if (it.get(1) < minY)
-    //             {
-    //                 minY = it.get(1);
-    //             }
-    //         }
-    //     }
-    //     else
-    //     {
-    //         for (auto it : vecMBR)
-    //         {
-    //             if (it.get(0) < it.minX)
-    //             {
-    //                 minX = it.get(0);
-    //             }
-    //             if (it.get(1) < it.minY)
-    //             {
-    //                 minY = it.get(1);
-    //             }
-    //         }      
-    //     }
-    //     return point_t({minX, minY});
-    // }
-
-    // point_t getMaxPointMBR()
-    // {
-    //     distance_t maxX = DBL_MIN;
-    //     distance_t maxY = DBL_MIN;
-    //     for (auto it : data)
-    //     {
-    //         if (it.get(0) > maxX)
-    //         {
-    //             maxX = it.get(0);
-    //         }
-    //         if (it.get(1) > maxY)
-    //         {
-    //             maxY = it.get(1);
-    //         }
-    //     }
-    //     return point_t({maxX, maxY});
-    // }    
-
     void addData(point_t elem)
     {
         data.push_back(elem);
     }
+    void deleteValueData(point_t elem)
+    {
+        data.erase(remove(data.begin(), data.end(), elem), data.end());
+    }
     void addNode(string key, Node* node)
     {
         children[key] = node;
-        vecMBR.push_back(node->getMBR());
+        MBRs[key] = node->getMBR();
     }
 
     bool contains(point_t elem)
@@ -130,6 +69,12 @@ struct Node
     bool hasSpace(size_t M)
     {
         return children.size() < M && data.size() < M;
+    }
+
+    int needBorrow(size_t m)
+    {
+        if (isLeaf()) return m-data.size();
+        return m-children.size();
     }
 
     pair<point_t, point_t> twoFurtherAway(point_t elem)

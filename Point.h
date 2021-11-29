@@ -6,6 +6,13 @@
 
 using distance_t = double;
 
+template<typename T>
+T valorAbs(T value)
+{
+  if (value < 0) return value*-1;
+  return value;
+}
+
 template <typename DataType, std::size_t DIM>
 class Point {
  private:
@@ -74,7 +81,7 @@ std::ostream& operator<<(std::ostream& os, Point<DataType, DIM>& obj) {
 template <typename DataType, std::size_t DIM>
 inline distance_t Point<DataType, DIM>::getArea(
     const Point<DataType, DIM>& p) const {
-    return abs(this->_values.at(0) - p.get(0)) * abs(this->_values.at(1) - p.get(1));
+    return valorAbs(this->_values.at(0) - p.get(0)) * valorAbs(this->_values.at(1) - p.get(1));
 }
 
 template <typename DataType, std::size_t DIM>

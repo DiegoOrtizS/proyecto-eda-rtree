@@ -14,6 +14,7 @@ class RTree
             auto MBR = node->getMBR();
             auto minPoint = MBR.getMinPoint();
             auto maxPoint = MBR.getMaxPoint();
+
             auto A = minPoint.getArea(maxPoint);
             // cout << minPoint << " " << maxPoint << endl;
             // cout << "ÁREA A: " << A << endl;
@@ -33,7 +34,6 @@ class RTree
             {
                 minPoint.set(1, it.get(1));
             }
-            // cout << minPoint << " " << maxPoint << endl;
             auto APrima = minPoint.getArea(maxPoint);
             // cout << "ÁREA A': " << APrima << endl;
             return APrima - A;
@@ -72,8 +72,54 @@ class RTree
             for (auto it : current->children)
             {
                 cout << it.first << " ";
+                cout << current->MBRs[it.first];
                 printRec(it.second);
                 cout << endl;
+            }
+        }
+
+        void borrow(Node *first, Node *second)
+        {
+            int n = first->needBorrow(m);
+            if (n > 0)
+            {
+                while (n--)
+                {
+                    point_t current;
+                    distance_t minAreaDiff = DBL_MAX;
+                    for (auto it : second->data)
+                    {
+                        distance_t currentAreaDiff = areaDiff(first, it);
+                        if (currentAreaDiff < minAreaDiff) 
+                        {
+                            current = it;
+                            minAreaDiff = currentAreaDiff;
+                        }
+                    }
+                    first->addData(current);
+                    second->deleteValueData(current);
+                }
+                return;
+            }
+            n = second->needBorrow(m);
+            if (n > 0)
+            {
+                while (n--)
+                {
+                    point_t current;
+                    distance_t minAreaDiff = DBL_MAX;
+                    for (auto it : first->data)
+                    {
+                        distance_t currentAreaDiff = areaDiff(second, it);
+                        if (currentAreaDiff < minAreaDiff) 
+                        {
+                            current = it;
+                            minAreaDiff = currentAreaDiff;
+                        }
+                    }
+                    second->addData(current);
+                    first->deleteValueData(current);
+                }
             }
         }
 
@@ -87,6 +133,8 @@ class RTree
             cont = 1;
         };
         ~RTree() {};
+
+        Node* getRoot() { return root; }
 
         Node* search(Node* current, point_t elem)
         {
@@ -117,6 +165,7 @@ class RTree
             // puede que haya bug
             if (current == nullptr)
             {
+                cout << "no localizado\n";
                 distance_t minAreaDiff = DBL_MAX;
                 for (auto it : root->children)
                 {
@@ -166,6 +215,7 @@ class RTree
                 if (current == root)
                 {
                     current->data.clear();
+                    borrow(firstNode, secondNode);
                     current->addNode("e"+to_string(cont++), firstNode);
                     current->addNode("e"+to_string(cont++), secondNode);
                     root = current;
@@ -174,8 +224,13 @@ class RTree
                 {
                     if (root->hasSpace(M))
                     {
+                        borrow(firstNode, secondNode);
                         root->addNode("e"+to_string(cont-1), firstNode);
                         root->addNode("e"+to_string(cont++), secondNode);
+                    }
+                    else
+                    {
+                        // recursivo
                     }
                 }
             }
