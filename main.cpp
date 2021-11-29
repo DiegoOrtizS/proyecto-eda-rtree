@@ -13,7 +13,6 @@ int main()
     rtree->insert(point_t(letra++, {0.5, 0.5}));
     rtree->insert(point_t(letra++, {4, 2.5}));
     rtree->insert(point_t(letra++, {4, 4}));
-    rtree->insert(point_t(letra++, {3.5, 5.5}));
     /* BUG: no se actualiza el MBR cuando se inserta en una hoja */
     // rtree->insert(point_t(letra++, {3.5, 5.5}));
     // rtree->insert(point_t(letra++, {0.75, 2.75}));
