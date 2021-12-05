@@ -123,6 +123,27 @@ class RTree
             }
         }
 
+        void rangeSearch(Node *current, MBR mbrSearch, vector<point_t> &result)
+        {
+            if (current->isLeaf())
+            {
+                for (auto it : current->data)
+                {
+                    if (mbrSearch.contains(it)) result.push_back(it);
+                }
+            }
+            else
+            {
+                for (auto it : current->MBRs)
+                {
+                    if (mbrSearch.intersect(it.second))
+                    {
+                        rangeSearch(current->children[it.first], mbrSearch, result);
+                    }
+                }
+            }
+        }
+
     public:
         RTree(size_t m, size_t M) 
         { 
@@ -142,11 +163,11 @@ class RTree
             {
                 return current;
             }
-            for (auto it : current->children)
+            for (auto it : current->MBRs)
             {
-                if (it.second->contains(elem))
+                if (it.second.contains(elem))
                 {
-                    return search(it.second, elem);
+                    return search(current->children[it.first], elem);
                 }
             }
             return nullptr;
@@ -234,6 +255,13 @@ class RTree
                     }
                 }
             }
+        }
+
+        vector<point_t> rangeSearch(MBR mbrSearch)
+        {
+            vector<point_t> result;
+            rangeSearch(root, mbrSearch, result);
+            return result;
         }
 
         void print()

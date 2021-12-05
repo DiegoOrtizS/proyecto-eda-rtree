@@ -11,6 +11,23 @@ struct MBR
 
     point_t getMinPoint() { return point_t({minX, minY}); };
     point_t getMaxPoint() { return point_t({maxX, maxY}); };
+
+    bool intersect(MBR other)
+    {
+        if (minX >= other.maxX || other.minX >= maxX)
+            return false;
+
+        if (minY >= other.maxY || other.minY >= maxY)
+            return false;
+
+        return true;
+    }
+
+    bool contains(point_t elem)
+    {
+        if (getMinPoint() <= elem && elem <= getMaxPoint()) return true;
+        return false;
+    }
 };
 
 ostream& operator<<(ostream& os, MBR &mbr) {
