@@ -28,6 +28,14 @@ struct MBR
         if (getMinPoint() <= elem && elem <= getMaxPoint()) return true;
         return false;
     }
+    
+    void updateMBR(point_t elem)
+    {
+        if (elem.get(0) < minX) minX = elem.get(0);
+        if (elem.get(1) < minY) minY = elem.get(1);
+        if (elem.get(0) > maxX) maxX = elem.get(0);
+        if (elem.get(1) > maxY) maxY = elem.get(1);
+    }
 };
 
 ostream& operator<<(ostream& os, MBR &mbr) {

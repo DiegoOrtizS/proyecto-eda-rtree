@@ -13,9 +13,8 @@ int main()
     rtree->insert(point_t(letra++, {0.5, 0.5}));
     rtree->insert(point_t(letra++, {4, 2.5}));
     rtree->insert(point_t(letra++, {4, 4}));
-    // /* BUG: no se actualiza el MBR cuando se inserta en una hoja */
-    // rtree->insert(point_t(letra++, {3.5, 5.5}));
-    // // rtree->insert(point_t(letra++, {0.75, 2.75}));
+    rtree->insert(point_t(letra++, {3.5, 5.5}));
+    rtree->insert(point_t(letra++, {0.75, 2.75}));
     rtree->print();
     auto res = rtree->rangeSearch(MBR{0,0,2.5,2.5});
     for (auto it : res) cout << it << " ";

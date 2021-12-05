@@ -9,9 +9,11 @@ struct Node
     vector<point_t> data;
     map<string, Node*> children;
     map<string, MBR> MBRs;
+    Node* parent;
 
-    Node() {};
+    Node() { parent = nullptr; };
 
+    // MBR que contiene a todo el nodo
     MBR getMBR()
     {
         distance_t minX = DBL_MAX, minY = DBL_MAX, maxX = DBL_MIN, maxY = DBL_MIN;

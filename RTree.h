@@ -144,6 +144,18 @@ class RTree
             }
         }
 
+        void getLeaves(Node *current, vector<Node*> &leaves)
+        {
+            if (current->isLeaf()) leaves.push_back(current);
+            else
+            {
+                for (auto it : current->children)
+                {
+                    getLeaves(it.second, leaves);
+                }
+            }
+        }
+
     public:
         RTree(size_t m, size_t M) 
         { 
@@ -183,17 +195,18 @@ class RTree
                 return;
             }
             Node *current = search(root, elem);
-            // puede que haya bug
             if (current == nullptr)
             {
                 cout << "no localizado\n";
+                vector<Node*> leaves;
+                getLeaves(root, leaves);
                 distance_t minAreaDiff = DBL_MAX;
-                for (auto it : root->children)
+                for (auto it : leaves)
                 {
-                    distance_t currentAreaDiff = areaDiff(it.second, elem);
+                    distance_t currentAreaDiff = areaDiff(it, elem);
                     if (currentAreaDiff < minAreaDiff) 
                     {
-                        current = it.second;
+                        current = it;
                         minAreaDiff = currentAreaDiff;
                     }
                 }
@@ -201,8 +214,18 @@ class RTree
 
             if (current->hasSpace(M))
             {
-                current->addData(elem);
                 cout << "tiene espacio\n";
+                if (current->parent != nullptr)
+                {
+                    for (auto it : current->parent->children)
+                    {
+                        if (it.second == current)
+                        {
+                            current->parent->MBRs[it.first].updateMBR(elem);
+                        }
+                    }
+                }
+                current->addData(elem);
             }
             else
             {
@@ -213,8 +236,6 @@ class RTree
                 firstNode->addData(pairPoints.first);
                 Node* secondNode = new Node();
                 secondNode->addData(pairPoints.second);
-
-
               
                 for (auto it : current->data)
                 {
@@ -239,6 +260,8 @@ class RTree
                     borrow(firstNode, secondNode);
                     current->addNode("e"+to_string(cont++), firstNode);
                     current->addNode("e"+to_string(cont++), secondNode);
+                    firstNode->parent = current;
+                    secondNode->parent = current;
                     root = current;
                 }
                 else
@@ -248,6 +271,8 @@ class RTree
                         borrow(firstNode, secondNode);
                         root->addNode("e"+to_string(cont-1), firstNode);
                         root->addNode("e"+to_string(cont++), secondNode);
+                        firstNode->parent = current->parent;
+                        secondNode->parent = current->parent;
                     }
                     else
                     {
