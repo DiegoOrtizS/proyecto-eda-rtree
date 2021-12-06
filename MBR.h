@@ -12,6 +12,11 @@ struct MBR
     point_t getMinPoint() { return point_t({minX, minY}); };
     point_t getMaxPoint() { return point_t({maxX, maxY}); };
 
+    point_t getCentralPoint()
+    {
+        return point_t({(minX+maxX)/2, (minY+maxY)/2});
+    }
+
     bool intersect(MBR other)
     {
         if (minX >= other.maxX || other.minX >= maxX)
