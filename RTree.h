@@ -237,8 +237,9 @@ class RTree
                 firstNode->addData(pairPoints.first);
                 Node* secondNode = new Node();
                 secondNode->addData(pairPoints.second);
-              
-                for (auto it : current->data)
+                auto aux = current->data;
+                aux.push_back(elem);
+                for (auto it : aux)
                 {
                     if (it == pairPoints.first || it == pairPoints.second)
                     {
@@ -265,14 +266,14 @@ class RTree
                 }
                 else
                 {
+                    string key = current->getKeyFromParent();
                     if (current->parent->hasSpace(M))
                     {
-                        current->parent->addNode("e"+to_string(cont-1), firstNode);
+                        current->parent->addNode(key, firstNode);
                         current->parent->addNode("e"+to_string(cont++), secondNode);
                     }
                     else
                     {
-                        string key = current->getKeyFromParent();
                         current->addNode(key, firstNode);
                         current->addNode("e"+to_string(cont++), secondNode);
                         root = new Node();

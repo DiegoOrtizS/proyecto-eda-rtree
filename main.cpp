@@ -17,13 +17,15 @@ int main()
     rtree->insert(point_t(letra++, {0.75, 2.75}));
     rtree->insert(point_t(letra++, {-1, -1}));
     rtree->insert(point_t(letra++, {1.25, 1.25}));
+    rtree->insert(point_t(letra++, {0.1, 0.1}));
+    rtree->insert(point_t(letra++, {0.8, 0.8}));
     rtree->print();
 
-    auto res = rtree->rangeSearch(MBR{0,0,2.5,2.5});
-    for (auto it : res) cout << it << " ";
-    cout << endl;
-    res = rtree->rangeSearch(MBR{2.5,2.5,5,5});
-    for (auto it : res) cout << it << " ";
-    cout << endl;
+    // auto res = rtree->rangeSearch(MBR{0,0,2.5,2.5});
+    // for (auto it : res) cout << it << " ";
+    // cout << endl;
+    // res = rtree->rangeSearch(MBR{2.5,2.5,5,5});
+    // for (auto it : res) cout << it << " ";
+    // cout << endl;
     return 0;
 }
