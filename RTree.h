@@ -166,6 +166,13 @@ class RTree
             }
         }
 
+        void deleteByKey(Node *current, string key)
+        {
+            current->children.erase(key);
+            current->MBRs.erase(key);
+            if (current->parent != nullptr) deleteByKey(current->parent, current->getKeyFromParent());
+        }
+
     public:
         RTree(size_t m, size_t M) 
         { 
@@ -230,7 +237,7 @@ class RTree
             }
             else
             {
-                cout << "split node" << endl;
+                cout << "split ";
                 pair<point_t, point_t> pairPoints = current->twoFurtherAway(elem);
                 // cout << pairPoints.first << " " << pairPoints.second << endl;
                 Node* firstNode = new Node();
@@ -259,6 +266,7 @@ class RTree
                 borrow(firstNode, secondNode);
                 if (current == root)
                 {
+                    cout << "root\n";
                     current->data.clear();
                     current->addNode("e"+to_string(cont++), firstNode);
                     current->addNode("e"+to_string(cont++), secondNode);
@@ -269,16 +277,18 @@ class RTree
                     string key = current->getKeyFromParent();
                     if (current->parent->hasSpace(M))
                     {
+                        cout << "con espacio\n";
                         current->parent->addNode(key, firstNode);
                         current->parent->addNode("e"+to_string(cont++), secondNode);
                     }
                     else
                     {
+                        cout << "sin espacio\n";
                         current->addNode(key, firstNode);
                         current->addNode("e"+to_string(cont++), secondNode);
-                        root = new Node();
                         Node *parent = current->parent;
-                        parent->deleteByKey(key);
+                        if (parent == root) root = new Node();
+                        deleteByKey(parent, key);
                         root->addNode("e"+to_string(cont++), current);
                         root->addNode("e"+to_string(cont++), parent);
                     }

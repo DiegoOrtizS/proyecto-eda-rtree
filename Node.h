@@ -56,11 +56,6 @@ struct Node
         MBRs[key] = node->getMBR();
         node->parent = this;
     }
-    void deleteByKey(string key)
-    {
-        children.erase(key);
-        MBRs.erase(key);
-    }
 
     bool contains(point_t elem)
     {
