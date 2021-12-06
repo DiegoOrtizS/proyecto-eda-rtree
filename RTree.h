@@ -157,6 +157,15 @@ class RTree
             }
         }
 
+        void updateAllTopMBR(Node *current, point_t elem)
+        {
+            if (current->parent != nullptr)
+            {
+                current->parent->MBRs[current->getKeyFromParent()].updateMBR(elem);
+                updateAllTopMBR(current->parent, elem);
+            }
+        }
+
     public:
         RTree(size_t m, size_t M) 
         { 
@@ -216,10 +225,7 @@ class RTree
             if (current->hasSpace(M))
             {
                 cout << "tiene espacio\n";
-                if (current->parent != nullptr)
-                {
-                    current->parent->MBRs[current->getKeyFromParent()].updateMBR(elem);
-                }
+                updateAllTopMBR(current, elem);
                 current->addData(elem);
             }
             else
