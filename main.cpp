@@ -15,7 +15,9 @@ int main()
     rtree->insert(point_t(letra++, {4, 4}));
     rtree->insert(point_t(letra++, {3.5, 5.5}));
     rtree->insert(point_t(letra++, {0.75, 2.75}));
+    rtree->insert(point_t(letra++, {-1, -1}));
     rtree->print();
+
     auto res = rtree->rangeSearch(MBR{0,0,2.5,2.5});
     for (auto it : res) cout << it << " ";
     cout << endl;

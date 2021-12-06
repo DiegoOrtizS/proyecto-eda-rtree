@@ -73,6 +73,7 @@ class RTree
             {
                 cout << it.first << " ";
                 cout << current->MBRs[it.first];
+                if (!it.second->isLeaf()) cout << endl;
                 printRec(it.second);
                 cout << endl;
             }
@@ -217,13 +218,7 @@ class RTree
                 cout << "tiene espacio\n";
                 if (current->parent != nullptr)
                 {
-                    for (auto it : current->parent->children)
-                    {
-                        if (it.second == current)
-                        {
-                            current->parent->MBRs[it.first].updateMBR(elem);
-                        }
-                    }
+                    current->parent->MBRs[current->getKeyFromParent()].updateMBR(elem);
                 }
                 current->addData(elem);
             }
@@ -254,29 +249,31 @@ class RTree
                     else
                         secondNode->addData(it);
                 }
+                borrow(firstNode, secondNode);
                 if (current == root)
                 {
                     current->data.clear();
-                    borrow(firstNode, secondNode);
                     current->addNode("e"+to_string(cont++), firstNode);
                     current->addNode("e"+to_string(cont++), secondNode);
-                    firstNode->parent = current;
-                    secondNode->parent = current;
                     root = current;
                 }
                 else
                 {
-                    if (root->hasSpace(M))
+                    if (current->parent->hasSpace(M))
                     {
-                        borrow(firstNode, secondNode);
-                        root->addNode("e"+to_string(cont-1), firstNode);
-                        root->addNode("e"+to_string(cont++), secondNode);
-                        firstNode->parent = current->parent;
-                        secondNode->parent = current->parent;
+                        current->parent->addNode("e"+to_string(cont-1), firstNode);
+                        current->parent->addNode("e"+to_string(cont++), secondNode);
                     }
                     else
                     {
-                        // recursivo
+                        string key = current->getKeyFromParent();
+                        current->addNode(key, firstNode);
+                        current->addNode("e"+to_string(cont++), secondNode);
+                        root = new Node();
+                        Node *parent = current->parent;
+                        parent->deleteByKey(key);
+                        root->addNode("e"+to_string(cont++), current);
+                        root->addNode("e"+to_string(cont++), parent);
                     }
                 }
             }

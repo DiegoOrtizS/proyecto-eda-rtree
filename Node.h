@@ -16,7 +16,7 @@ struct Node
     // MBR que contiene a todo el nodo
     MBR getMBR()
     {
-        distance_t minX = DBL_MAX, minY = DBL_MAX, maxX = DBL_MIN, maxY = DBL_MIN;
+        distance_t minX = DBL_MAX, minY = DBL_MAX, maxX = -DBL_MAX, maxY = -DBL_MAX;
         if (isLeaf())
         {
             for (auto it : data)
@@ -38,7 +38,6 @@ struct Node
                 if (mbr.maxY > maxY) maxY = mbr.maxY;
             }
         }
-
         return MBR{minX, minY, maxX, maxY};
     }
 
@@ -50,10 +49,17 @@ struct Node
     {
         data.erase(remove(data.begin(), data.end(), elem), data.end());
     }
+
     void addNode(string key, Node* node)
     {
         children[key] = node;
         MBRs[key] = node->getMBR();
+        node->parent = this;
+    }
+    void deleteByKey(string key)
+    {
+        children.erase(key);
+        MBRs.erase(key);
     }
 
     bool contains(point_t elem)
@@ -70,13 +76,26 @@ struct Node
 
     bool hasSpace(size_t M)
     {
-        return children.size() < M && data.size() < M;
+        if (isLeaf()) return data.size() < M;
+        return children.size() < M;
     }
 
     int needBorrow(size_t m)
     {
         if (isLeaf()) return m-data.size();
         return m-children.size();
+    }
+
+    string getKeyFromParent()
+    {
+        for (auto it : parent->children)
+        {
+            if (it.second == this)
+            {
+                return it.first;
+            }
+        }
+        return "";
     }
 
     pair<point_t, point_t> twoFurtherAway(point_t elem)
