@@ -319,6 +319,31 @@ class RTree
         };
         ~RTree() {};
 
+        long  WriteNode(Node _reg,const std::string& filename){
+            std::fstream outFile;
+            outFile.open(filename,std::ios::in| std::ios::out| std::ios::binary | std::ofstream::app);
+            long _pos;
+            if(outFile.is_open()){
+                outFile.seekg(0,std::ios::end);
+                _pos = _reg.write(outFile);
+                outFile.close();
+            }
+            return _pos;
+        }
+  
+
+        Node readNode(long pos,const std::string& filename){
+            std::fstream outFile;
+            Node obj;
+            outFile.open(filename,std::ios::in| std::ios::binary);
+            if (outFile.is_open()) {
+                outFile.seekg(pos, std::ios::beg);
+                obj.read(outFile);
+                outFile.close();
+            }
+            return obj;
+        }
+
         Node* getRoot() { return root; }
 
         Node* search(Node* current, point_t elem)

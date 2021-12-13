@@ -2,14 +2,142 @@
 #include <map>
 #include <cfloat>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 #include "MBR.h"
 
 struct Node
 {
+    long address{-1};
     vector<point_t> data;
     map<string, Node*> children;
+    map<string, long > childrenAddress;
     map<string, MBR> MBRs;
     Node* parent;
+    bool isleaf;
+    long parentAddress{-1};
+
+   long write(std::fstream &stream) {
+    long pos_begin=stream.tellg();
+    isleaf=isLeaf();
+    int sizePoint=data.size();
+    int sizeChildren=children.size();
+    int sizeMBR=MBRs.size();
+    double pX;
+    double pY;
+    char key;
+    long toaddresChild=sizeof(isleaf);
+    stream.write((char *) &isleaf, sizeof(isleaf));
+    stream.write((char *) &parentAddress, sizeof(parentAddress));
+    if(isleaf){
+        stream.write((char *) &sizePoint, sizeof(sizePoint));
+        for(int i=0;i<sizePoint;i++){
+             auto tmp=data[i];
+             key=tmp.getKey();
+             pX=tmp.get(0);
+             pY=tmp.get(1);
+             stream.write((char *) &key, sizeof(key));
+             stream.write((char *) &pX, sizeof(pX));
+             stream.write((char *) &pY, sizeof(pY));     
+        } 
+    }else{
+        stream.write((char *) &sizeChildren, sizeof(sizeChildren));
+        vector<long> addresToInsert;
+        for (auto & element : children) {
+            string keymap=element.first;
+            long currentAddressChild=element.second->address;
+            addresToInsert.push_back(currentAddressChild);
+            // stream.write((char *) &keymap, sizeof(keymap));
+            writeString(stream,keymap);
+            stream.write((char *) &currentAddressChild, sizeof(currentAddressChild));
+        }
+        stream.write((char *) &sizeMBR, sizeof(sizeMBR));
+        for (auto & element : MBRs) {
+            string mbrKey=element.first;
+            auto mbrNode=element.second;
+            double minX=mbrNode.minX;
+            double minY=mbrNode.minY;
+            double maxX=mbrNode.maxX;
+            double maxY=mbrNode.maxY;
+            //stream.write((char *) &mbrKey, sizeof(mbrKey));
+            writeString(stream,mbrKey);
+            stream.write((char *) &minX, sizeof(minX));
+            stream.write((char *) &minY, sizeof(minY));
+            stream.write((char *) &maxX, sizeof(maxX));
+            stream.write((char *) &maxY, sizeof(maxY));
+        }
+
+        for (auto & element : addresToInsert) {
+            stream.seekp(element+toaddresChild);
+            stream.write((char *) &pos_begin, sizeof(parentAddress));
+        }
+
+    }
+    return pos_begin;
+   }
+
+   void writeString(fstream &stream, string str) {
+        int len = str.size();
+        stream.write((char *) &len, sizeof(len));
+        stream.write(str.c_str(), len);
+   }
+
+   string readString(fstream &stream) {
+        int len;
+        stream.read((char *) &len, sizeof(len));
+        char *buffer = new char[len + 1];
+        stream.read(buffer, len);
+        buffer[len] = '\0';
+        string result = buffer;
+        delete buffer;
+        return result;
+    }   
+
+
+   bool read(std::fstream &stream){
+        stream.read((char *) &isleaf, sizeof(isleaf));
+        stream.read((char *) &parentAddress, sizeof(parentAddress));
+        if(isleaf){
+            int sizePoint=0;
+            stream.read((char *) &sizePoint, sizeof(sizePoint));
+            for(int i=0;i<sizePoint;i++){
+                double pX;
+                double pY;
+                char key;
+                stream.write((char *) &key, sizeof(key));
+                stream.write((char *) &pX, sizeof(pX));
+                stream.write((char *) &pY, sizeof(pY));
+                data.push_back(point_t(key, {pX,pY}));
+            } 
+        }else{
+            int sizeChildren=0;
+            stream.read((char *) &sizeChildren, sizeof(sizeChildren));
+            for(int i=0;i<sizeChildren;i++){
+                string keymap;
+                long currentAddressChild;
+                stream.read((char *) &keymap, sizeof(keymap));
+                stream.read((char *) &currentAddressChild, sizeof(currentAddressChild));
+                childrenAddress[keymap] = currentAddressChild;
+            }
+            int sizeMBR=0;
+            stream.read((char *) &sizeMBR, sizeof(sizeMBR));
+            for(int i=0;i<sizeMBR;i++){
+                string mbrKey=readString(stream);
+                double minX;
+                double minY;
+                double maxX;
+                double maxY;
+                stream.write((char *) &minX, sizeof(minX));
+                stream.write((char *) &minY, sizeof(minY));
+                stream.write((char *) &maxX, sizeof(maxX));
+                stream.write((char *) &maxY, sizeof(maxY));
+                MBRs[mbrKey]=MBR{minX, minY, maxX, maxY};
+            }
+        }
+
+        if (stream.fail()) return false;
+        return true;
+   }
 
     Node() { parent = nullptr; };
 

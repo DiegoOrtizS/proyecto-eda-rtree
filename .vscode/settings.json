@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.module": "php",
         "unordered_map": "cpp",
         "xstring": "cpp",
         "vector": "cpp",
@@ -44,6 +45,24 @@
         "xlocnum": "cpp",
         "xmemory": "cpp",
         "xstddef": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "*.tcc": "cpp",
+        "atomic": "cpp",
+        "bit": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "functional": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "random": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "fstream": "cpp",
+        "ranges": "cpp"
     }
 }
