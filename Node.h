@@ -93,7 +93,7 @@ struct Node
         return "";
     }
 
-    pair<point_t, point_t> twoFurthestAwayPoint(point_t elem)
+    pair<point_t, point_t> twoFurtherAway(point_t elem)
     {
         point_t firstPoint;
         point_t secondPoint;
@@ -106,46 +106,15 @@ struct Node
         {
             for (int j = i+1; j < dataAux.size(); j++)
             {
-                distance_t currentDistance = dataAux[i].distance(dataAux[j]);
-                if (currentDistance > maxDistance)
+                if (dataAux[i].distance(dataAux[j]) > maxDistance)
                 {
                     firstPoint = dataAux[i];
                     secondPoint = dataAux[j];
-                    maxDistance = currentDistance;
+                    maxDistance = dataAux[i].distance(dataAux[j]);
                 }
             }
         }
         return make_pair(firstPoint, secondPoint);
-    }
-
-    pair<string, string> twoFurthestAwayMBR()
-    {
-        string firstMBRKey;
-        string secondMBRKey;
-        distance_t maxDistance = -1;
-
-        for (auto it : MBRs)
-        {
-            for (auto it2 : MBRs)
-            {
-                if (it.first == it2.first) continue;
-                distance_t currentDistance = it.second.getCentralPoint().distance(it2.second.getCentralPoint());
-                if (currentDistance > maxDistance)
-                {
-                    firstMBRKey = it.first;
-                    secondMBRKey = it2.first;
-                    maxDistance = currentDistance;
-                }
-            }
-        }
-
-        return make_pair(firstMBRKey, secondMBRKey);
-    }
-
-    void deleteChildren(string key)
-    {
-        children.erase(key);
-        MBRs.erase(key);
     }
 
     void printData()

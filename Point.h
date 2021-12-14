@@ -16,7 +16,7 @@ T valorAbs(T value)
 template <typename DataType, std::size_t DIM>
 class Point {
  private:
-  char key;
+  std::string key;
   std::array<DataType, DIM> _values;
 
  public:
@@ -24,7 +24,7 @@ class Point {
 
   Point(const std::array<DataType, DIM>& init_array) : _values(init_array) {}
 
-  Point(char key, const std::array<DataType, DIM>& init_array) : _values(init_array) 
+  Point(std::string key, const std::array<DataType, DIM>& init_array) : _values(init_array) 
   {
     this->key = key;
   }
@@ -41,7 +41,7 @@ class Point {
   DataType get(std::size_t pos) const { return _values.at(pos); }
   void set(std::size_t pos, DataType value) { _values[pos] = value; }
 
-  char getKey() { return key; }
+  std::string getKey() { return key; }
 
   std::size_t size() { return DIM; }
 };

@@ -9,7 +9,7 @@ class RTree
         size_t m;
         size_t cont;
 
-        distance_t areaDiffPoint(Node *node, point_t it)
+        distance_t areaDiff(Node *node, point_t it)
         {
             auto MBR = node->getMBR();
             auto minPoint = MBR.getMinPoint();
@@ -39,7 +39,7 @@ class RTree
             return APrima - A;
         }
 
-        distance_t checkAreaPoint(Node *node, point_t it)
+        distance_t checkArea(Node *node, point_t it)
         {
             distance_t area = -1;
             if (node->data.size() == 1)
@@ -54,36 +54,10 @@ class RTree
                 }
                 else
                 {
-                    area = areaDiffPoint(node, it);
+                    area = areaDiff(node, it);
                 }
             }
             return area;
-        }
-
-        distance_t areaDiffMBR(Node *node, MBR it)
-        {
-            auto MBR = node->getMBR();
-            auto minPoint = MBR.getMinPoint();
-            auto maxPoint = MBR.getMaxPoint();
-            auto A = minPoint.getArea(maxPoint);
-            if (it.maxX > maxPoint.get(0))
-            {
-                maxPoint.set(0, it.maxX);
-            }
-            if (it.maxY > maxPoint.get(1))
-            {
-                maxPoint.set(1, it.maxY);
-            }
-            if (it.minX < minPoint.get(0))
-            {
-                minPoint.set(0, it.minX);
-            }
-            if (it.minY < minPoint.get(1))
-            {
-                minPoint.set(1, it.minY);
-            }
-            auto APrima = minPoint.getArea(maxPoint);
-            return APrima - A;
         }
 
         void printRec(Node *current)
@@ -105,7 +79,7 @@ class RTree
             }
         }
 
-        void borrowPoint(Node *first, Node *second)
+        void borrow(Node *first, Node *second)
         {
             int n = first->needBorrow(m);
             if (n > 0)
@@ -116,7 +90,7 @@ class RTree
                     distance_t minAreaDiff = DBL_MAX;
                     for (auto it : second->data)
                     {
-                        distance_t currentAreaDiff = areaDiffPoint(first, it);
+                        distance_t currentAreaDiff = areaDiff(first, it);
                         if (currentAreaDiff < minAreaDiff) 
                         {
                             current = it;
@@ -137,7 +111,7 @@ class RTree
                     distance_t minAreaDiff = DBL_MAX;
                     for (auto it : first->data)
                     {
-                        distance_t currentAreaDiff = areaDiffPoint(second, it);
+                        distance_t currentAreaDiff = areaDiff(second, it);
                         if (currentAreaDiff < minAreaDiff) 
                         {
                             current = it;
@@ -146,51 +120,6 @@ class RTree
                     }
                     second->addData(current);
                     first->deleteValueData(current);
-                }
-            }
-        }
-
-        void borrowMBR(Node *first, Node *second)
-        {
-            int n = first->needBorrow(m);
-            if (n > 0)
-            {
-                while (n--)
-                {
-                    string currentKey;
-                    distance_t minAreaDiff = DBL_MAX;
-                    for (auto it : second->MBRs)
-                    {
-                        distance_t currentAreaDiff = areaDiffMBR(first, it.second);
-                        if (currentAreaDiff < minAreaDiff) 
-                        {
-                            currentKey = it.first;
-                            minAreaDiff = currentAreaDiff;
-                        }
-                    }
-                    first->addNode(currentKey, second->children[currentKey]);
-                    second->deleteChildren(currentKey);
-                }
-                return;
-            }
-            n = second->needBorrow(m);
-            if (n > 0)
-            {
-                while (n--)
-                {
-                    string currentKey;
-                    distance_t minAreaDiff = DBL_MAX;
-                    for (auto it : first->MBRs)
-                    {
-                        distance_t currentAreaDiff = areaDiffMBR(second, it.second);
-                        if (currentAreaDiff < minAreaDiff) 
-                        {
-                            currentKey = it.first;
-                            minAreaDiff = currentAreaDiff;
-                        }
-                    }
-                    second->addNode(currentKey, first->children[currentKey]);
-                    first->deleteChildren(currentKey);
                 }
             }
         }
@@ -237,14 +166,18 @@ class RTree
             }
         }
 
-        void recursiveSplit(Node *current, point_t &elem)
+        void deleteByKey(Node *current, string key)
         {
-            cout << "split ";
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> hola
+            // cout << "split ";
             Node* firstNode = new Node();
             Node* secondNode = new Node();
             if (current->isLeaf())
             {
-                cout << "hoja ";
+                // cout << "hoja ";
                 pair<point_t, point_t> pairPoints = current->twoFurthestAwayPoint(elem);
                 firstNode->addData(pairPoints.first);
                 secondNode->addData(pairPoints.second);
@@ -268,7 +201,7 @@ class RTree
             }
             else
             {
-                cout << "nodo interno ";
+                // cout << "nodo interno ";
                 auto pairMBRKey = current->twoFurthestAwayMBR();
                 firstNode->addNode(pairMBRKey.first, current->children[pairMBRKey.first]);
                 secondNode->addNode(pairMBRKey.second, current->children[pairMBRKey.second]);
@@ -288,24 +221,35 @@ class RTree
             }
             if (current == root)
             {
-                cout << "root\n";
+                // cout << "root\n";
                 root = new Node();
                 root->addNode("e"+to_string(cont++), firstNode);
                 root->addNode("e"+to_string(cont++), secondNode);
+                delete current;
                 return;
             }
+            Node *parent = current->parent;
             string key = current->getKeyFromParent();
-            if (current->parent->hasSpace(M))
+            delete current;
+            if (parent->hasSpace(M))
             {
-                cout << "padre con espacio\n";
-                current->parent->addNode(key, firstNode);
-                current->parent->addNode("e"+to_string(cont++), secondNode);
+                // cout << "padre con espacio\n";
+                parent->addNode(key, firstNode);
+                parent->addNode("e"+to_string(cont++), secondNode);
                 return;
             }
-            cout << "padre sin espacio\n";
-            current->parent->addNode(key, firstNode);
-            current->parent->addNode("e"+to_string(cont++), secondNode);
-            recursiveSplit(current->parent, elem);
+            // cout << "padre sin espacio\n";
+            parent->addNode(key, firstNode);
+            parent->addNode("e"+to_string(cont++), secondNode);
+            recursiveSplit(parent, elem);
+<<<<<<< HEAD
+=======
+=======
+            current->children.erase(key);
+            current->MBRs.erase(key);
+            if (current->parent != nullptr) deleteByKey(current->parent, current->getKeyFromParent());
+>>>>>>> parent of a99ffb8... finish insert
+>>>>>>> hola
         }
 
     public:
@@ -343,19 +287,19 @@ class RTree
             {
                 root = new Node();
                 root->addData(elem);
-                cout << "1er insert\n";
+                // cout << "1er insert\n";
                 return;
             }
             Node *current = search(root, elem);
             if (current == nullptr)
             {
-                cout << "no localizado\n";
+                // cout << "no localizado\n";
                 vector<Node*> leaves;
                 getLeaves(root, leaves);
                 distance_t minAreaDiff = DBL_MAX;
                 for (auto it : leaves)
                 {
-                    distance_t currentAreaDiff = areaDiffPoint(it, elem);
+                    distance_t currentAreaDiff = areaDiff(it, elem);
                     if (currentAreaDiff < minAreaDiff) 
                     {
                         current = it;
@@ -366,13 +310,68 @@ class RTree
 
             if (current->hasSpace(M))
             {
-                cout << "tiene espacio\n";
+                // cout << "tiene espacio\n";
                 updateAllTopMBR(current, elem);
                 current->addData(elem);
             }
             else
             {
-                recursiveSplit(current, elem);
+                cout << "split ";
+                pair<point_t, point_t> pairPoints = current->twoFurtherAway(elem);
+                // cout << pairPoints.first << " " << pairPoints.second << endl;
+                Node* firstNode = new Node();
+                firstNode->addData(pairPoints.first);
+                Node* secondNode = new Node();
+                secondNode->addData(pairPoints.second);
+                auto aux = current->data;
+                aux.push_back(elem);
+                for (auto it : aux)
+                {
+                    if (it == pairPoints.first || it == pairPoints.second)
+                    {
+                        continue;
+                    }
+
+                    distance_t firstArea = checkArea(firstNode, it);
+                    if (firstArea == -1) continue;
+                    distance_t secondArea = checkArea(secondNode, it);
+                    if (secondArea == -1) continue;
+
+                    if (firstArea < secondArea)
+                        firstNode->addData(it);
+                    else
+                        secondNode->addData(it);
+                }
+                borrow(firstNode, secondNode);
+                if (current == root)
+                {
+                    cout << "root\n";
+                    current->data.clear();
+                    current->addNode("e"+to_string(cont++), firstNode);
+                    current->addNode("e"+to_string(cont++), secondNode);
+                    root = current;
+                }
+                else
+                {
+                    string key = current->getKeyFromParent();
+                    if (current->parent->hasSpace(M))
+                    {
+                        cout << "con espacio\n";
+                        current->parent->addNode(key, firstNode);
+                        current->parent->addNode("e"+to_string(cont++), secondNode);
+                    }
+                    else
+                    {
+                        cout << "sin espacio\n";
+                        current->addNode(key, firstNode);
+                        current->addNode("e"+to_string(cont++), secondNode);
+                        Node *parent = current->parent;
+                        if (parent == root) root = new Node();
+                        deleteByKey(parent, key);
+                        root->addNode("e"+to_string(cont++), current);
+                        root->addNode("e"+to_string(cont++), parent);
+                    }
+                }
             }
         }
 

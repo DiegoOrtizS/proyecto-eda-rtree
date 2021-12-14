@@ -44,6 +44,9 @@
         "xlocnum": "cpp",
         "xmemory": "cpp",
         "xstddef": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "string": "cpp",
+        "cctype": "cpp",
+        "fstream": "cpp"
     }
 }
