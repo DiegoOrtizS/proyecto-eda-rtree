@@ -47,6 +47,7 @@
         "xtr1common": "cpp",
         "string": "cpp",
         "cctype": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "ctime": "cpp"
     }
 }

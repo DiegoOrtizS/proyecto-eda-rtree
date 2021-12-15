@@ -4,8 +4,6 @@
 #include <string>
 #include <ctime>
 
-using namespace std;
-
 vector<string> split(const string& str, const string& delim)
 {
 	vector<string> tokens;
@@ -30,7 +28,8 @@ vector<string> split(const string& str, const string& delim)
 
 
 // 5 longitude (x) y 6 latitude (y) cols
-int main(){
+int main()
+{
     RTree *rtree = new RTree(100, 500);
     ifstream file("green_tripdata_2015-01.csv");
 
@@ -45,7 +44,7 @@ int main(){
 		if (cont == sizeData) break;
         auto v = split(line, ",");
 		rtree->insert(point_t(to_string(cont), {stod(v[5]), stod(v[6])}));
-		// cout << cont << endl;
+		cout << cont << endl;
 		++cont;
     }
     clock_t clock2 = clock();
@@ -53,4 +52,4 @@ int main(){
 
 	cout << cont << endl;
     return 0; 
-};
+}

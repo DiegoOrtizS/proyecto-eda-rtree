@@ -34,12 +34,51 @@ struct MBR
         return false;
     }
     
-    void updateMBR(point_t elem)
+    void updateMBRwithPoint(point_t elem)
     {
         if (elem.get(0) < minX) minX = elem.get(0);
         if (elem.get(1) < minY) minY = elem.get(1);
         if (elem.get(0) > maxX) maxX = elem.get(0);
         if (elem.get(1) > maxY) maxY = elem.get(1);
+    }
+
+    void updateMBRwithMBR(MBR mbr)
+    {
+        if (mbr.minX < minX) minX = mbr.minX;
+        if (mbr.minY < minY) minY = mbr.minY;
+        if (mbr.maxX > maxX) maxX = mbr.maxX;
+        if (mbr.maxY > maxY) maxY = mbr.maxY;
+    }
+
+    distance_t areaMBRwithPoint(point_t elem)
+    {
+        MBR mbrAux = *this;
+        if (elem.get(0) < mbrAux.minX) mbrAux.minX = elem.get(0);
+        if (elem.get(1) < mbrAux.minY) mbrAux.minY = elem.get(1);
+        if (elem.get(0) > mbrAux.maxX) mbrAux.maxX = elem.get(0);
+        if (elem.get(1) > mbrAux.maxY) mbrAux.maxY = elem.get(1);
+        return mbrAux.getArea();
+    }
+
+    distance_t areaMBRwithMBR(MBR mbr)
+    {
+        MBR mbrAux = *this;
+        if (mbr.minX < mbrAux.minX) mbrAux.minX = mbr.minX;
+        if (mbr.minY < mbrAux.minY) mbrAux.minY = mbr.minY;
+        if (mbr.maxX > mbrAux.maxX) mbrAux.maxX = mbr.maxX;
+        if (mbr.maxY > mbrAux.maxY) mbrAux.maxY = mbr.maxY;
+        return mbrAux.getArea();
+    }
+
+    distance_t getArea()
+    {
+        return valorAbs((maxX-minX)*(maxY-minY));
+    }
+
+    void set(point_t elem)
+    {
+        minX = maxX = elem.get(0);
+        minY = maxY = elem.get(1);
     }
 };
 
