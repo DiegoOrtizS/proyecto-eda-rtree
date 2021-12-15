@@ -96,7 +96,6 @@ class RTree
                     cout << it << " ";
                 }
             }
-            cout << current->mbr << endl;
             for (auto it : current->children)
             {
                 // cout << it.first << " ";
@@ -309,18 +308,20 @@ class RTree
                         aux.push_back(i);
                     }
                 }
-                aux.erase(remove(aux.begin(), aux.end(), pairIDs.first), aux.end());
-                aux.erase(remove(aux.begin(), aux.end(), pairIDs.second), aux.end());
+                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.first), aux.end());
+                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.second), aux.end());
                 // firstNode set mbr
-                firstNode->mbr.minX = current->children[pairIDs.first]->mbr.minX;
-                firstNode->mbr.maxX = current->children[pairIDs.first]->mbr.maxX;
-                firstNode->mbr.minY = current->children[pairIDs.first]->mbr.minY;
-                firstNode->mbr.maxY = current->children[pairIDs.first]->mbr.maxY;
+                // firstNode->mbr.minX = current->children[pairIDs.first]->mbr.minX;
+                // firstNode->mbr.maxX = current->children[pairIDs.first]->mbr.maxX;
+                // firstNode->mbr.minY = current->children[pairIDs.first]->mbr.minY;
+                // firstNode->mbr.maxY = current->children[pairIDs.first]->mbr.maxY;
+                firstNode->addNode(current->children[pairIDs.first]);
+                secondNode->addNode(current->children[pairIDs.second]);
                 // secondNode set mbr
-                secondNode->mbr.minX = current->children[pairIDs.second]->mbr.minX;
-                secondNode->mbr.maxX = current->children[pairIDs.second]->mbr.maxX;
-                secondNode->mbr.minY = current->children[pairIDs.second]->mbr.minY;
-                secondNode->mbr.maxY = current->children[pairIDs.second]->mbr.maxY;
+                // secondNode->mbr.minX = current->children[pairIDs.second]->mbr.minX;
+                // secondNode->mbr.maxX = current->children[pairIDs.second]->mbr.maxX;
+                // secondNode->mbr.minY = current->children[pairIDs.second]->mbr.minY;
+                // secondNode->mbr.maxY = current->children[pairIDs.second]->mbr.maxY;
                 
                 // cout << "F LAU\n";
                 while (true)
@@ -356,13 +357,12 @@ class RTree
                 else
                 {
                     ///delete root;
-                    root = new Node();
-                    root->addNode(firstNode);
-                    printRec(firstNode);
-                    // firstNode->print();
-                    root->addNode(secondNode);
-                    printRec(secondNode);
-                    root->mbr = current->mbr;
+                   // root = new Node();
+                    auto tmp = new Node();
+                    tmp->addNode(firstNode);
+                    tmp->addNode(secondNode);
+                    root=tmp;
+                    delete current;
                     return make_pair(root, nullptr);
                 }
                 return make_pair(firstNode, secondNode);
@@ -523,7 +523,7 @@ class RTree
                 return;
             }
             Node *current = search(root, elem);
-            cout << current->data[0] << endl;
+            // cout << current->data[0] << endl;
             // if (current == nullptr)
             // {
             //     // cout << "no localizado\n";
@@ -576,6 +576,7 @@ class RTree
 
         void print()
         {
+            //cout<<root->mbr<<endl;
             printRec(root);
         }
 };

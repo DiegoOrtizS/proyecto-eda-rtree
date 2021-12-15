@@ -32,7 +32,7 @@ int main()
     // rtree->insert(point_t(to_string(letra++), {1.15, 1.15})); // U
     // rtree->insert(point_t(to_string(letra++), {-0.75, -0.75})); // V
 
-    // rtree->print();
+    rtree->print();
     // auto res = rtree->rangeSearch(MBR{0,0,2.5,2.5});
     // for (auto it : res) cout << it << " ";
     // cout << endl;
