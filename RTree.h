@@ -462,9 +462,10 @@ class RTree
                 }
                 else
                 {
-                    N->parent->addNode(NN);
+                    N->parent->addNodeOverflow(NN);
                     // cout << "start split MBR\n";
                     auto par = splitNode(N->parent);
+                    //N->parent->mbr.updateMBRwithMBR(NN->mbr);
                     // cout << "finish split MBR\n";
                     adjustTree(par.first, par.second);
                 }
@@ -576,7 +577,7 @@ class RTree
 
         void print()
         {
-            //cout<<root->mbr<<endl;
+            cout<<root->mbr<<endl;
             printRec(root);
         }
 };

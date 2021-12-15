@@ -48,6 +48,11 @@ struct Node
         data.push_back(elem);
         mbr.updateMBRwithPoint(elem);
     }
+
+    void addDataOverflow(point_t elem){
+        data.push_back(elem);
+    }
+
     void deleteValueData(point_t elem)
     {
         data.erase(remove(data.begin(), data.end(), elem), data.end());
@@ -57,6 +62,11 @@ struct Node
     {
         children.push_back(node);
         mbr.updateMBRwithMBR(node->mbr);
+        node->parent = this;
+    }
+
+    void addNodeOverflow(Node * node){
+        children.push_back(node);
         node->parent = this;
     }
 
