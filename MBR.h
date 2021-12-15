@@ -80,6 +80,14 @@ struct MBR
         minX = maxX = elem.get(0);
         minY = maxY = elem.get(1);
     }
+
+    void setMBR(MBR other)
+    {
+        minX = other.minX;
+        minY = other.minY;
+        maxX = other.maxX;
+        maxY = other.maxY;
+    }
 };
 
 ostream& operator<<(ostream& os, MBR &mbr) {

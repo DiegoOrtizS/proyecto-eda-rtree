@@ -75,7 +75,7 @@ inline bool Point<DataType, DIM>::operator<=(
 
 template <typename DataType, std::size_t DIM>
 std::ostream& operator<<(std::ostream& os, Point<DataType, DIM>& obj) {
-  return os << obj.getKey(); // <<  ": { " << obj.get(0) << ", " << obj.get(1) << " }";
+  return os << obj.getKey();//char(stoi(obj.getKey())); // <<  ": { " << obj.get(0) << ", " << obj.get(1) << " }";
 }
 
 template <typename DataType, std::size_t DIM>

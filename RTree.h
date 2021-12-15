@@ -308,20 +308,14 @@ class RTree
                         aux.push_back(i);
                     }
                 }
-                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.first), aux.end());
-                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.second), aux.end());
-                // firstNode set mbr
-                // firstNode->mbr.minX = current->children[pairIDs.first]->mbr.minX;
-                // firstNode->mbr.maxX = current->children[pairIDs.first]->mbr.maxX;
-                // firstNode->mbr.minY = current->children[pairIDs.first]->mbr.minY;
-                // firstNode->mbr.maxY = current->children[pairIDs.first]->mbr.maxY;
-                firstNode->addNode(current->children[pairIDs.first]);
-                secondNode->addNode(current->children[pairIDs.second]);
-                // secondNode set mbr
-                // secondNode->mbr.minX = current->children[pairIDs.second]->mbr.minX;
-                // secondNode->mbr.maxX = current->children[pairIDs.second]->mbr.maxX;
-                // secondNode->mbr.minY = current->children[pairIDs.second]->mbr.minY;
-                // secondNode->mbr.maxY = current->children[pairIDs.second]->mbr.maxY;
+                // cout << "PICK SEEDS:\n";
+
+                firstNode->mbr = current->children[pairIDs.first]->mbr;
+                secondNode->mbr = current->children[pairIDs.second]->mbr;
+                firstNode->addNodeOverflow(current->children[pairIDs.first]);
+                secondNode->addNodeOverflow(current->children[pairIDs.second]);
+                // cout << firstNode->mbr << endl;
+                // cout << secondNode->mbr << endl;
                 
                 // cout << "F LAU\n";
                 while (true)
@@ -356,14 +350,12 @@ class RTree
                 }
                 else
                 {
-                    ///delete root;
-                   // root = new Node();
                     auto tmp = new Node();
                     tmp->addNode(firstNode);
                     tmp->addNode(secondNode);
                     root=tmp;
                     delete current;
-                    return make_pair(root, nullptr);
+                    return make_pair(firstNode, nullptr);
                 }
                 return make_pair(firstNode, secondNode);
             }
@@ -520,7 +512,7 @@ class RTree
             {
                 root = new Node();
                 root->addData(elem);
-                cout << "1er insert\n";
+                // cout << "1er insert\n";
                 return;
             }
             Node *current = search(root, elem);
@@ -544,16 +536,16 @@ class RTree
 
             if (current->hasSpace(M))
             {
-                cout << "tiene espacio\n";
+                // cout << "tiene espacio\n";
                 updateAllTopMBR(current, elem);
                 current->addData(elem);
             }
             else
             {
-                current->addData(elem);
-                cout << "start split\n";
+                current->addDataOverflow(elem);
+                // cout << "start split\n";
                 auto par = splitNode(current);
-                cout << "finish split\n";
+                // cout << "finish split\n";
                 // for (auto &it : par.first->data)
                 // {
                 //     cout << it << " ";   

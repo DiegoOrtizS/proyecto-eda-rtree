@@ -30,7 +30,7 @@ vector<string> split(const string& str, const string& delim)
 // 5 longitude (x) y 6 latitude (y) cols
 int main()
 {
-    RTree *rtree = new RTree(2, 3);
+    RTree *rtree = new RTree(100, 500);
     ifstream file("green_tripdata_2015-01.csv");
 
     string line;
