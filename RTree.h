@@ -286,8 +286,16 @@ class RTree
                     par.first->addData(current->data[aux[par.second]]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
-                current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
-                current->parent->addNode(firstNode);
+                if (current->parent != nullptr)
+                {
+                    current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
+                    current->parent->addNode(firstNode);
+                    delete current;
+                }
+                else
+                {
+                    current->addNode(firstNode);
+                }
                 return make_pair(firstNode, secondNode);
             }
             else
@@ -337,8 +345,18 @@ class RTree
                     par.first->addNode(current->children[aux[par.second]]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
-                current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
-                current->parent->addNode(firstNode);
+                if (current->parent != nullptr)
+                {
+                    current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
+                    current->parent->addNode(firstNode);
+                    delete current;
+                }
+                else
+                {
+                    current->addNode(firstNode);
+                }
+                // current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
+                // current->parent->addNode(firstNode);
                 return make_pair(firstNode, secondNode);
             }
         }
