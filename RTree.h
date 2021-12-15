@@ -86,24 +86,26 @@ class RTree
         //     return APrima - A;
         // }
 
-        // void printRec(Node *current)
-        // {
-        //     if (current->isLeaf())
-        //     {
-        //         for (auto it : current->data)
-        //         {
-        //             cout << it << " ";
-        //         }
-        //     }
-        //     for (auto it : current->children)
-        //     {
-        //         cout << it.first << " ";
-        //         cout << current->MBRs[it.first];
-        //         if (!it.second->isLeaf()) cout << endl;
-        //         printRec(it.second);
-        //         cout << endl;
-        //     }
-        // }
+        void printRec(Node *current)
+        {
+            if (current->isLeaf())
+            {
+                cout << current->mbr << "\t";
+                for (auto it : current->data)
+                {
+                    cout << it << " ";
+                }
+            }
+            cout << current->mbr << endl;
+            for (auto it : current->children)
+            {
+                // cout << it.first << " ";
+                cout << it->mbr << endl;
+                // if (!it.second->isLeaf()) cout << endl;
+                printRec(it);
+                cout << endl;
+            }
+        }
 
         // void borrowPoint(Node *first, Node *second)
         // {
@@ -241,13 +243,16 @@ class RTree
         {
             Node* firstNode = new Node();
             Node* secondNode = new Node();    
+            // cout << "enter pick seeds\n";
             pair<int, int> pairIDs = current->pickSeeds();      
+            // cout << "finish pick seeds\n";
             vector<int> aux;
             
             if (current->isLeaf())
             {
                 // cout << "hoja ";
                 // auto aux = current->data;
+                // cout << "XD\n";
                 for (int i = 0; i < current->data.size(); i++)
                 {
                     if (i != pairIDs.first && i != pairIDs.second)
@@ -255,13 +260,21 @@ class RTree
                         aux.push_back(i);
                     }
                 }
+                // cout << "INDEX: ";
+                // for (auto it : aux)
+                // {
+                //     cout << it << " ";
+                // }
+                // cout << endl;
+                // cout << "XD\n";
                 // aux.erase(remove(aux.begin(), aux.end(), pairIDs.first), aux.end());
                 // aux.erase(remove(aux.begin(), aux.end(), pairIDs.second), aux.end());
+                // cout << "SEEDS: " << pairIDs.first << " " << pairIDs.second << endl;
                 firstNode->mbr.set(current->data[pairIDs.first]);
                 firstNode->addData(current->data[pairIDs.first]);
                 secondNode->mbr.set(current->data[pairIDs.second]);
                 secondNode->addData(current->data[pairIDs.second]);
-                
+                // cout << "enter while true\n";
                 while (true)
                 {
                     if (aux.empty()) break;
@@ -283,6 +296,7 @@ class RTree
                     }
                     // en el par.first se va a insertar el valor de aux en la posición par.second
                     pair<Node*, int> par = current->pickNext(firstNode, secondNode, aux);
+                    cout << par.first << " " << par.second << endl;
                     par.first->addData(current->data[aux[par.second]]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
@@ -538,7 +552,9 @@ class RTree
             else
             {
                 current->addData(elem);
+                cout << "start split\n";
                 auto par = splitNode(current);
+                cout << "finish split\n";
                 adjustTree(par.first, par.second);
             }
         }
@@ -550,8 +566,8 @@ class RTree
             return result;
         }
 
-        // void print()
-        // {
-        //     printRec(root);
-        // }
+        void print()
+        {
+            printRec(root);
+        }
 };

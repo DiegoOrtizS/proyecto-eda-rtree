@@ -106,7 +106,8 @@ struct Node
             {
                 for (int j = i+1; j < data.size(); j++)
                 {
-                    maxEA = valorAbs(data[i].get(0)-data[i].get(0))*(data[i].get(1)-data[i].get(1));
+                    currentEA = valorAbs((data[i].get(0)-data[j].get(0))*(data[i].get(1)-data[j].get(1)));
+                    // cout << data[i] << " " << data[j] << ": " << currentEA << endl;
                     if (maxEA < currentEA)
                     {
                         maxEA = currentEA;
@@ -122,7 +123,7 @@ struct Node
             {
                 for (int j = i+1; j < children.size(); j++)
                 {
-                    maxEA = valorAbs(children[i]->mbr.areaMBRwithMBR(children[j]->mbr) - children[i]->mbr.getArea() - children[j]->mbr.getArea());
+                    currentEA = valorAbs(children[i]->mbr.areaMBRwithMBR(children[j]->mbr) - children[i]->mbr.getArea() - children[j]->mbr.getArea());
                     if (maxEA < currentEA)
                     {
                         maxEA = currentEA;
@@ -140,7 +141,9 @@ struct Node
         distance_t maxDiffArea = 0;
         int maxID;
         distance_t firstArea  = firstNode->mbr.getArea();
+        // cout << firstArea << endl;
         distance_t secondArea = secondNode->mbr.getArea();
+        // cout << secondArea << endl;
         distance_t firstDiffArea, secondDiffArea;
         if (isLeaf())
         {
@@ -148,6 +151,7 @@ struct Node
             {
                 firstDiffArea  = firstNode->mbr.areaMBRwithPoint(data[currentID]) - firstArea;
                 secondDiffArea = secondNode->mbr.areaMBRwithPoint(data[currentID]) - secondArea;
+                // cout << firstDiffArea << " " << secondDiffArea << endl;
                 if (valorAbs(firstDiffArea-secondDiffArea) >= maxDiffArea)
                 {
                     maxDiffArea = valorAbs(firstDiffArea-secondDiffArea);
@@ -176,6 +180,8 @@ struct Node
             {
                 return make_pair(firstNode, maxID);
             }
+            // cout << "+++++\n";
+            // cout << secondNode->data[0] << endl;
             return make_pair(secondNode, maxID);
         }
         else

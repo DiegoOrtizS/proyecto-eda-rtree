@@ -30,7 +30,7 @@ vector<string> split(const string& str, const string& delim)
 // 5 longitude (x) y 6 latitude (y) cols
 int main()
 {
-    RTree *rtree = new RTree(100, 500);
+    RTree *rtree = new RTree(2, 3);
     ifstream file("green_tripdata_2015-01.csv");
 
     string line;
@@ -41,7 +41,7 @@ int main()
     clock_t clock1 = clock();
     while (getline(file, line))
     {
-		if (cont == sizeData) break;
+		// if (cont == sizeData) break;
         auto v = split(line, ",");
 		rtree->insert(point_t(to_string(cont), {stod(v[5]), stod(v[6])}));
 		cout << cont << endl;
