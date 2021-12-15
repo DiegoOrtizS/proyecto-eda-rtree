@@ -90,7 +90,7 @@ class RTree
         {
             if (current->isLeaf())
             {
-                cout << current->mbr << "\t";
+                // cout << current->mbr << "\t";
                 for (auto it : current->data)
                 {
                     cout << it << " ";
@@ -296,7 +296,7 @@ class RTree
                     }
                     // en el par.first se va a insertar el valor de aux en la posición par.second
                     pair<Node*, int> par = current->pickNext(firstNode, secondNode, aux);
-                    cout << par.first->data[0] << " " << par.second << endl;
+                    // cout << par.first->data[0] << " " << par.second << endl;
                     par.first->addData(current->data[par.second]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
@@ -552,9 +552,9 @@ class RTree
             else
             {
                 current->addData(elem);
-                cout << "start split\n";
+                // cout << "start split\n";
                 auto par = splitNode(current);
-                cout << "finish split\n";
+                // cout << "finish split\n";
                 adjustTree(par.first, par.second);
             }
         }

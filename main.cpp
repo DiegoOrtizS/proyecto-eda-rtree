@@ -10,11 +10,12 @@ int main()
     {
         rtree->insert(point_t(to_string(letra++), {i, i}));
     }
+
+    rtree->insert(point_t(to_string(letra++), {0.5, 0.5})); // E
+    rtree->insert(point_t(to_string(letra++), {4, 2.5})); // F
+    rtree->insert(point_t(to_string(letra++), {4, 4})); // G, split
     rtree->print();
 
-    // rtree->insert(point_t(to_string(letra++), {0.5, 0.5})); // E
-    // rtree->insert(point_t(to_string(letra++), {4, 2.5})); // F
-    // rtree->insert(point_t(to_string(letra++), {4, 4})); // G, split
     // rtree->insert(point_t(to_string(letra++), {3.5, 5.5})); // H
     // rtree->insert(point_t(to_string(letra++), {0.75, 2.75})); // I
     // rtree->insert(point_t(to_string(letra++), {-1, -1})); // J, split
