@@ -8,40 +8,10 @@ struct Node
 {
     vector<point_t> data;
     vector<Node*> children;
-    // map<string, Node*> children;
     Node* parent;
     MBR mbr;
-    // map<string, MBR> MBRs;
 
     Node() { parent = nullptr; };
-
-    // MBR que contiene a todo el nodo
-    // MBR getMBR()
-    // {
-    //     distance_t minX = DBL_MAX, minY = DBL_MAX, maxX = -DBL_MAX, maxY = -DBL_MAX;
-    //     if (isLeaf())
-    //     {
-    //         for (auto it : data)
-    //         {
-    //             if (it.get(0) < minX) minX = it.get(0);
-    //             if (it.get(1) < minY) minY = it.get(1);
-    //             if (it.get(0) > maxX) maxX = it.get(0);
-    //             if (it.get(1) > maxY) maxY = it.get(1);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         for (auto it : MBRs)
-    //         {
-    //             auto mbr = it.second;
-    //             if (mbr.minX < minX) minX = mbr.minX;
-    //             if (mbr.minY < minY) minY = mbr.minY;
-    //             if (mbr.maxX > maxX) maxX = mbr.maxX;
-    //             if (mbr.maxY > maxY) maxY = mbr.maxY;
-    //         }
-    //     }
-    //     return MBR{minX, minY, maxX, maxY};
-    // }
 
     void addData(point_t elem)
     {
@@ -86,24 +56,6 @@ struct Node
         if (isLeaf()) return data.size() < M;
         return children.size() < M;
     }
-
-    // int needBorrow(size_t m)
-    // {
-    //     if (isLeaf()) return m-data.size();
-    //     return m-children.size();
-    // }
-
-    // string getKeyFromParent()
-    // {
-    //     for (auto it : parent->children)
-    //     {
-    //         if (it.second == this)
-    //         {
-    //             return it.first;
-    //         }
-    //     }
-    //     return "";
-    // }
 
     pair<int, int> pickSeeds()
     {
@@ -231,61 +183,6 @@ struct Node
             return make_pair(secondNode, maxID);
         }
     }
-
-    // pair<point_t, point_t> twoFurthestAwayPoint(point_t elem)
-    // {
-    //     point_t firstPoint;
-    //     point_t secondPoint;
-    //     distance_t maxDistance = -1;
-
-    //     vector<point_t> dataAux = data;
-    //     dataAux.push_back(elem);
-
-    //     for (int i = 0; i < dataAux.size(); i++)
-    //     {
-    //         for (int j = i+1; j < dataAux.size(); j++)
-    //         {
-    //             distance_t currentDistance = dataAux[i].distance(dataAux[j]);
-    //             if (currentDistance > maxDistance)
-    //             {
-    //                 firstPoint = dataAux[i];
-    //                 secondPoint = dataAux[j];
-    //                 maxDistance = currentDistance;
-    //             }
-    //         }
-    //     }
-    //     return make_pair(firstPoint, secondPoint);
-    // }
-
-    // pair<string, string> twoFurthestAwayMBR()
-    // {
-    //     string firstMBRKey;
-    //     string secondMBRKey;
-    //     distance_t maxDistance = -1;
-
-    //     for (auto it : MBRs)
-    //     {
-    //         for (auto it2 : MBRs)
-    //         {
-    //             if (it.first == it2.first) continue;
-    //             distance_t currentDistance = it.second.getCentralPoint().distance(it2.second.getCentralPoint());
-    //             if (currentDistance > maxDistance)
-    //             {
-    //                 firstMBRKey = it.first;
-    //                 secondMBRKey = it2.first;
-    //                 maxDistance = currentDistance;
-    //             }
-    //         }
-    //     }
-
-    //     return make_pair(firstMBRKey, secondMBRKey);
-    // }
-
-    // void deleteChildren(string key)
-    // {
-    //     children.erase(key);
-    //     MBRs.erase(key);
-    // }
 
     void printData()
     {
