@@ -10,7 +10,7 @@ int main()
     {
         rtree->insert(point_t(to_string(letra++), {i, i}));
     }
-    // rtree->print();
+    rtree->print();
 
     // rtree->insert(point_t(to_string(letra++), {0.5, 0.5})); // E
     // rtree->insert(point_t(to_string(letra++), {4, 2.5})); // F

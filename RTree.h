@@ -296,8 +296,8 @@ class RTree
                     }
                     // en el par.first se va a insertar el valor de aux en la posición par.second
                     pair<Node*, int> par = current->pickNext(firstNode, secondNode, aux);
-                    cout << par.first << " " << par.second << endl;
-                    par.first->addData(current->data[aux[par.second]]);
+                    cout << par.first->data[0] << " " << par.second << endl;
+                    par.first->addData(current->data[par.second]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
                 if (current->parent != nullptr)
@@ -356,7 +356,7 @@ class RTree
                     }
                     // en el par.first se va a insertar el valor de aux en la posición par.second
                     pair<Node*, int> par = current->pickNext(firstNode, secondNode, aux);
-                    par.first->addNode(current->children[aux[par.second]]);
+                    par.first->addNode(current->children[par.second]);
                     aux.erase(remove(aux.begin(), aux.end(), par.second), aux.end());
                 }
                 if (current->parent != nullptr)
