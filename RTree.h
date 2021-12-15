@@ -250,9 +250,6 @@ class RTree
             
             if (current->isLeaf())
             {
-                // cout << "hoja ";
-                // auto aux = current->data;
-                // cout << "XD\n";
                 for (int i = 0; i < current->data.size(); i++)
                 {
                     if (i != pairIDs.first && i != pairIDs.second)
@@ -260,16 +257,6 @@ class RTree
                         aux.push_back(i);
                     }
                 }
-                // cout << "INDEX: ";
-                // for (auto it : aux)
-                // {
-                //     cout << it << " ";
-                // }
-                // cout << endl;
-                // cout << "XD\n";
-                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.first), aux.end());
-                // aux.erase(remove(aux.begin(), aux.end(), pairIDs.second), aux.end());
-                // cout << "SEEDS: " << pairIDs.first << " " << pairIDs.second << endl;
                 firstNode->mbr.set(current->data[pairIDs.first]);
                 firstNode->addData(current->data[pairIDs.first]);
                 secondNode->mbr.set(current->data[pairIDs.second]);
@@ -335,6 +322,7 @@ class RTree
                 secondNode->mbr.minY = current->children[pairIDs.second]->mbr.minY;
                 secondNode->mbr.maxY = current->children[pairIDs.second]->mbr.maxY;
                 
+                // cout << "F LAU\n";
                 while (true)
                 {
                     if (aux.empty()) break;
@@ -367,10 +355,16 @@ class RTree
                 }
                 else
                 {
-                    current->addNode(firstNode);
+                    ///delete root;
+                    root = new Node();
+                    root->addNode(firstNode);
+                    printRec(firstNode);
+                    // firstNode->print();
+                    root->addNode(secondNode);
+                    printRec(secondNode);
+                    root->mbr = current->mbr;
+                    return make_pair(root, nullptr);
                 }
-                // current->parent->children.erase(remove(current->parent->children.begin(), current->parent->children.end(), current), current->parent->children.end());
-                // current->parent->addNode(firstNode);
                 return make_pair(firstNode, secondNode);
             }
         }
@@ -461,14 +455,17 @@ class RTree
             }
             else
             {
-                N->parent->addNode(NN);
                 if (N->parent->children.size() < M)
                 {
+                    N->parent->addNode(NN);
                     adjustTree(N->parent, nullptr);
                 }
                 else
                 {
+                    N->parent->addNode(NN);
+                    // cout << "start split MBR\n";
                     auto par = splitNode(N->parent);
+                    // cout << "finish split MBR\n";
                     adjustTree(par.first, par.second);
                 }
             }
@@ -522,10 +519,11 @@ class RTree
             {
                 root = new Node();
                 root->addData(elem);
-                // cout << "1er insert\n";
+                cout << "1er insert\n";
                 return;
             }
             Node *current = search(root, elem);
+            cout << current->data[0] << endl;
             // if (current == nullptr)
             // {
             //     // cout << "no localizado\n";
@@ -545,16 +543,26 @@ class RTree
 
             if (current->hasSpace(M))
             {
-                // cout << "tiene espacio\n";
+                cout << "tiene espacio\n";
                 updateAllTopMBR(current, elem);
                 current->addData(elem);
             }
             else
             {
                 current->addData(elem);
-                // cout << "start split\n";
+                cout << "start split\n";
                 auto par = splitNode(current);
-                // cout << "finish split\n";
+                cout << "finish split\n";
+                // for (auto &it : par.first->data)
+                // {
+                //     cout << it << " ";   
+                // }
+                // cout << endl;
+                // for (auto &it : par.second->data)
+                // {
+                //     cout << it << " ";   
+                // }
+                // cout << endl;
                 adjustTree(par.first, par.second);
             }
         }
